@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block head %}
+<title> Task Keeper </title>
+
+{% endblock %}
+{% block body %}
+<h1> Task master </h1>
+<h2> User:{{user.username}}</h2>
+<h6 id="chk"> Permissions: 
+	{% if user.level==0 %}
+		User(Read only)<script> usere(); </script>
+	{% else %}
+		Admin(Read and Write)
+</h6>
+{% endif %}
+{% if tasks|length<1 %}
+	<h3> There are no tasks! Create one below. </h3>
+{% else %}
+<table style="border-width:1px" border=1> 
+	<tr>
+	<th>Task</th><th>Date added</th><th>Status</th><th>Deadline</th><th>actions</th>
+	</tr>
+	{% for task in tasks %}
+		<tr>	
+			<td>{{task.content}}</td>
+			<td>{{task.date_created.date()}}</td>			
+			<td>{{task.status}}</td>
+			<td>{{task.date_finished.date()}}</td>
+			<td ><a id="d1"href="/delete/{{task.id}}">Delete<a><br>
+			<a href="/update/{{task.id}}">Update</a></td>
+		</tr>
+	{% endfor %}
+</table>
+	{% endif %}
+<form id="d5" action="/" method="POST">
+	<input  type="text" placeholder="task" name="content" id="content">
+	<input type="date" name="findate" id="findate">
+	<select id="progres" name="progres">
+		<option value="Not started">Not started</option>
+		<option value="On progress">On progress</option>
+		<option value="Finished">Finished</option>
+	</select>
+	<button id="d2">Add task</button>
+</form>
+<form action="/overdue" method='GET'>
+<button> get overdues </button>
+</form>
+<form action="/finished" method="GET">
+<button > get finished </button>
+</form>
+<form action="/due" method="GET">
+<label>Choose date to view tasks that are due by a particular date:</label>
+<input type="date" name="duedate" id="duedate">
+<button > get tasks </button>
+</form>
+{% endblock %}
