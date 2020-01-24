@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block head %}
+<title> Task Keeper </title>
+{% endblock %}
+{% block body %}
+
+ <form action="/register" method="POST">
+ 	<input id="usrname" name="usrname" type="text" placeholder="username"><br>
+	<input id="pass" name="pass" type="password" placeholder="Password"><br>
+	<!--<input id="emaill" name="emaill" type="text" placeholder="email">-->
+	<select id="levl" name="levl">
+	<option val=0>0 (user)</option>
+	<option val=0>1 (admin)</option>
+	</select>
+	<button>Register</button>
+ </form>
+{% endblock %}
+

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block head %}
+<title> Task Keeper </title>
+<h2> Task master </h2>
+{% endblock %}
+{% block body %}
+
+ <form action="/login" method="POST">
+ 	<input id="usrname" name="usrname" type="text" placeholder="username"><br>
+	<input id="pass" name="pass" type="password" placeholder="Password"><br>
+	<!--<input id="emaill" name="emaill" type="text" placeholder="email">-->
+	<button>Login</button>
+ </form>
+{% endblock %}
+

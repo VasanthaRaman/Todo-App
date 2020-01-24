@@ -1,0 +1,22 @@
+<html>
+<head>
+<link rel="stylesheet" href="{{url_for('static',filename='css/main.css')}}">
+{% block head %}{% endblock %}
+</head>
+<body>
+{% block body %}
+<p style="color:red">hello there</p>
+{% endblock %}
+</body>
+<script>
+	function usere()
+	{
+	window.alert("dude");
+	document.getElementById("d1").disabled=true;
+	document.getElementById("d2").disabled=true;
+	//document.getElementById("d5").visiblre
+	}
+
+</script>
+</html>
+

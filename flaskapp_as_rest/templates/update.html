@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block head %}
+{% endblock %}
+{% block body %}
+
+ <form action="/update/{{task.id}}" method="POST">
+ 	<input id="newcontent" name="newcontent" type="text" value="{{task.content}}" placeholder="new task">
+	<input id="findate" name="findate" type="date">
+	<select id="progres" name="progres">
+		<option value="Not started">Not started</option>
+		<option value="On progress">On progress</option>
+		<option value="Finished">Finished</option>
+	</select>
+	<button>Update task</button>
+ </form>
+{% endblock %}
+
