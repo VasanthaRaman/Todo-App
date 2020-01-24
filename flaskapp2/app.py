@@ -1,8 +1,9 @@
-from flask import Flask,render_template,request,redirect,session
+from flask import Flask,render_template,request,redirect,session,jsonify
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 #from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
+import json
 
 app=Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///test8.db'
@@ -47,7 +48,7 @@ def register():
 		userr=User(username=username,password=passs,email=email,level=lev)
 		db.session.add(userr)
 		db.session.commit()
-		return redirect('/')
+		return redirect('/login')
 	else:
 		return render_template('register.html')
 
@@ -60,7 +61,7 @@ def login_user():
 		usser=user.id+1
 		if(user.password==passs):
 			tasks=Todo.query.order_by(Todo.date_created).all()
-			if(user.level==1):
+			if(user.level!=0):
 				session['response']=user.username
 				session['response2']=user.level
 				return render_template('index.html',tasks=tasks,user=user)
@@ -78,22 +79,30 @@ def login_user():
 
 def index():
 	if(request.method=='POST'):
+		iplist=request.get_json()
 		task_content=request.form['content']
 		fin_date=request.form['findate']
 		findate = datetime.strptime(fin_date, '%Y-%m-%d')
 		option=request.form['progres']
 		print(option)
+		iplist2={"task_content":task_content,"option":option}
 		new_task=Todo(content=task_content,status=option,date_finished=findate.date())
 		#try:
 		db.session.add(new_task)
 		db.session.commit()
+		session['response3']=iplist2
+#		return jsonify({"you sent" : iplist2}) , 201
 		return redirect('/')
 		#except:
-		#	return "There was an error"	
+		#	return "There was an error"
+		
+			
 	else:
 		tasks=Todo.query.order_by(Todo.date_created).all()
 		usernam=session['response']
 		user=User.query.filter(User.username==usernam).first()
+		jsontype=session['response3']
+		print(jsontype)
 		return render_template('index.html',tasks=tasks,user=user)
 @app.route('/delete/<int:id>')
 def delete(id):
@@ -120,22 +129,44 @@ def update(id):
 		return render_template('update.html',task=task)
 @app.route('/finished')
 def getfinishedjobs():
+	new_dict={}
 	tasks=Todo.query.filter(Todo.status=="Finished").all()
+	for i in range(len(tasks)):
+		#
+		new_dict["task"+str(i)]=tasks[i].content
+		#my_json={"title"+tasks[i].id:tasks[i].content}
+	to_json=json.dumps(new_dict)	
+#	return to_json
 	return render_template('finishedjobs.html',tasks=tasks)
 @app.route('/overdue')
 def getoverduejobs():
+	new_dict={}
 	tasks=Todo.query.filter(Todo.date_finished<=datetime.now()).all()
+	for i in range(len(tasks)):
+		#
+		new_dict["task"+str(i)]=tasks[i].content
+		#my_json={"title"+tasks[i].id:tasks[i].content}
+	to_json=json.dumps(new_dict)	
+#	return to_json
 	return render_template('overduejobs.html',tasks=tasks)
 @app.route("/due")
 def getjobs2():
 		#if edate in request.args:
 			#return "helloo"
+		new_dict={}
 		edate=request.args.get('duedate')
 		eedate=datetime.strptime(edate, '%Y-%m-%d')
 		tasks=Todo.query.filter(Todo.date_finished==eedate).all()
+		for i in range(len(tasks)):
+		#
+			new_dict["task"+str(i)]=tasks[i].content
+		#my_json={"title"+tasks[i].id:tasks[i].content}
+		to_json=json.dumps(new_dict)	
+	#	return to_json
 		return render_template('duedate.html',tasks=tasks,edate=eedate)
 		#return edate
 	
+
 @app.route("/getByExpected" ,methods=['POST','GET'])
 def getjobs():
 	if request.method == 'GET':
